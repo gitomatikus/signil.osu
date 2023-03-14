@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Ти потрапив на танець павуків</title>
+        <link rel="stylesheet" href="style/picnic.min.css">
+        <link rel="stylesheet" type="text/css" href="style/main.css">
+        <!-- <link href="//fonts.googleapis.com/css?family=Exo+2:400,600italic" rel="stylesheet" type="text/css"> -->
+        <link rel="stylesheet" type="text/css" href="style/font.css">
+        <link rel="icon" href="favicon.png">
+        <script src="js/launchgame.js"></script>
+        <script src="js/downloader.js"></script>
+        <script src="js/addbeatmaplist.js"></script>
+        <script src="js/settings.js"></script>
+        <script src="js/jsloader.js"></script>
+        <script src="js/lib/localforage.min.js"></script>
+    </head>
+
+    <body>
+    <div id="osuApp" hidden>
+        <div class="game-area" id="game-area" hidden>
+        </div>
+
+        <div class="pause-menu" id="pause-menu" hidden>
+            <div class="paused-title">paused</div>
+            <div class="button-list">
+                <div class="pausebutton continue" id="pausebtn-continue">
+                    <div class="inner">Continue</div>
+                </div>
+                <div class="pausebutton retry" id="pausebtn-retry">
+                    <div class="inner">Retry</div>
+                </div>
+                <div class="pausebutton quit" id="pausebtn-quit">
+                    <div class="inner">Quit</div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="main-page" id="main-page" hidden>
+            <div class="main-content">
+
+
+                <div class="index-area" hidden>
+                    <a onclick="genRandomList()" class="more" style="cursor:pointer;">换一换</a>
+                    <hr/>
+                    <div class="beatmap-list" id="beatmap-list-random">
+                        <!-- to be filled in script -->
+                    </div>
+                </div>
+
+
+            <div class="statuslines" id="statuslines" hidden>
+                <div class="progress" id="script-progress">
+                    Scripts
+                    <div class="lds-dual-ring"></div>
+                </div>
+                <div class="progress" id="skin-progress">
+                    Skin
+                    <div class="lds-dual-ring"></div>
+                </div>
+                <div class="progress" id="sound-progress">
+                    Hitsounds
+                    <div class="lds-dual-ring"></div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // what's happening
+            let tbody = document.getElementById("activity-list");
+            function formattime(date) {
+                let m;
+                return date.getHours() + ":" + ((m=date.getMinutes())<10?('0'+m):m);
+            }
+            // new
+            addBeatmapList("https://api.sayobot.cn/beatmaplist?0=20&1=0&2=2&5=1",
+                document.getElementById("beatmap-list-new"),
+                function(t){return (t.modes&1)!=0;}, 4);
+            // random
+            function genRandomList() {
+                // clear list
+                let list = document.getElementById("beatmap-list-random");
+
+                // fill list
+                let randstart = Math.floor(Math.random()*20000);
+                addBeatmapList('', list,
+                    function(t){while (list.firstChild) list.removeChild(list.firstChild); return (t.modes&1)!=0;}, 4);
+            }
+            genRandomList();
+
+        </script>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        </div>
+    </div>
+    <div style=" display: block;margin-left: auto;margin-right: auto;width: 50%;">
+        <img on src="muffin1.png" onclick="playMuffet()">
+    </div>
+    </body>
+</html>
+
+
+<script>
+
+    function playMuffet() {
+        new Audio('/muffet.mp3').play()
+        setTimeout(function() {
+            launchGame(window.blob, 1580332, 'easy');
+        }, 1000);
+
+    }
+
+</script>
+
+
+<!-- attribution -->
+<!-- play icon made by https://www.flaticon.com/authors/those-icons -->
+<!-- search icon made by https://www.flaticon.com/authors/good-ware -->
