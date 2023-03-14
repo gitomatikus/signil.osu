@@ -251,6 +251,12 @@ define([], function()
 
         function uploadScore(summary) {
             console.log(summary)
+            window.setTimeout(function(){
+
+                window.location.href = "http://localhost:3000/";
+
+            }, 5000);
+
         }
 
         this.showSummary = function(metadata, hiterrors, retryCallback, quitCallback) {
@@ -309,6 +315,16 @@ define([], function()
             newdiv(top, "grade " + rank, rank);
             let left = newdiv(grading, "left");
             newdiv(left, "block score", Math.round(this.score).toString());
+
+            let pts = acc*1337;
+            switch (rank) {
+                case "F": pts += -228; break;
+                case "S": pts += 228; break;
+                case "SS": pts += 420; break;
+                case "A": pts += 69; break;
+            }
+            let symbol = pts >= 0 ? "+" : "";
+            newdiv(left, "block scoreSignil", symbol+pts.toFixed(2));
             newdiv(left, "block acc", (acc*100).toFixed(2)+"%");
             newdiv(left, "block err", errortext(hiterrors));
             newdiv(left, "block great", this.judgecnt.great.toString());
@@ -317,16 +333,19 @@ define([], function()
             newdiv(left, "block miss", this.judgecnt.miss.toString());
             newdiv(left, "block placeholder");
             newdiv(left, "block combo", this.maxcombo.toString() + "x");
+
+            newdiv(left, "block score", Math.round(this.score).toString());
+
             if (this.fullcombo)
                 newdiv(left, "fullcombo");
             let b1 = newdiv(grading, "btn retry");
-            newdiv(b1, "inner", "Retry");
+            // newdiv(b1, "inner", "Retry");
             b1.onclick = function() {
                 grading.remove();
                 retryCallback();
             }
             let b2 = newdiv(grading, "btn quit");
-            newdiv(b2, "inner", "Quit");
+            // newdiv(b2, "inner", "Quit");
             b2.onclick = function() {
                 grading.remove();
                 quitCallback();
