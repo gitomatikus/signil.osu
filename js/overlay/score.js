@@ -249,14 +249,48 @@ define([], function()
             this.setSpriteArrayPos(this.comboDigits, basex + this.scoreDigits.width / 2 + 16*unit, basey + 3*unit);
         }
 
+
+        function getParamValue(paramName)
+        {
+            let url = window.location.search.substring(1); //get rid of "?" in querystring
+            let qArray = url.split('&'); //get key-value pairs
+            for (let i = 0; i < qArray.length; i++)
+            {
+                let pArr = qArray[i].split('='); //split key and value
+                if (pArr[0] == paramName)
+                    return pArr[1]; //return value
+            }
+        }
+
+
         function uploadScore(summary) {
-            console.log(summary)
-            window.setTimeout(function(){
 
-                window.location.href = "http://localhost:3000/";
+            let name = getParamValue("name");
+            let game = getParamValue("game");
 
-            }, 5000);
-
+            if (!name) {
+                return;
+            }
+            fetch('http://206.189.1.146/api/game/results', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    game: game ?? 1,
+                    customName: 'Muffin',
+                    results: {
+                        signilPoints: Math.round(summary.pts),
+                        hash: name,
+                        points: summary.score,
+                        grade: summary.grade,
+                        accuracy: summary.acc,
+                        customName: 'Muffin',
+                    }
+                })
+            })
+            console.log(summary.pts, name);
         }
 
         this.showSummary = function(metadata, hiterrors, retryCallback, quitCallback) {
@@ -338,21 +372,25 @@ define([], function()
 
             if (this.fullcombo)
                 newdiv(left, "fullcombo");
-            let b1 = newdiv(grading, "btn retry");
+            // let b1 = newdiv(grading, "btn retry");
             // newdiv(b1, "inner", "Retry");
-            b1.onclick = function() {
-                grading.remove();
-                retryCallback();
-            }
+            // b1.onclick = function() {
+            //     grading.remove();
+            //     grading.remove();
+            //     retryCallback();
+            // }
             let b2 = newdiv(grading, "btn quit");
-            // newdiv(b2, "inner", "Quit");
+            newdiv(b2, "inner", "Quit");
             b2.onclick = function() {
-                grading.remove();
-                quitCallback();
+                let parentUrl = (window.location != window.parent.location)
+                    ? document.referrer
+                    : document.location.href;
+                window.location.href = parentUrl + "?route=muffin-results";
             }
             window.setTimeout(function(){grading.classList.remove("transparent")},100);
             // generate summary data
             let summary = {
+                pts: symbol+pts.toFixed(2),
                 sid: metadata.BeatmapSetID,
                 bid: metadata.BeatmapID,
                 title: metadata.Title,
